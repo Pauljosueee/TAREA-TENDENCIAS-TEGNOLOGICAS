@@ -2,242 +2,177 @@
 
 ## 1. Título
 
-**Creación de Imagen Docker Personalizada para Aplicación React con Backend Simulado**
+Red de contenedores con Backend (NestJS), Frontend (Angular/Ionic) y Base de Datos MariaDB utilizando Docker.
 
 ---
 
 ## 2. Tiempo de duración
 
-**Tiempo estimado:** 60 minutos
+**Tiempo estimado:** 90 minutos
 
 ---
 
 ## 3. Fundamentos
 
-La contenerización con Docker permite empaquetar aplicaciones junto con todas sus dependencias en entornos aislados y portables llamados contenedores. Esto garantiza que el software se ejecute de manera consistente sin importar el sistema operativo o la configuración del equipo donde se despliegue. En este proyecto, se aplican estos principios para encapsular una aplicación frontend desarrollada en React, utilizando un Dockerfile que define el proceso de construcción y despliegue dentro de un contenedor basado en Nginx. Adicionalmente, se ejecuta un servicio backend simulado que permite suministrar datos a la aplicación, demostrando cómo Docker facilita la interoperabilidad entre servicios y simplifica el proceso de desarrollo, pruebas y despliegue de aplicaciones web modernas.
+Docker es una herramienta que permite ejecutar aplicaciones dentro de contenedores ligeros e independientes, garantizando que funcionen de forma consistente en cualquier entorno. En esta práctica se crearán y orquestarán contenedores para tres componentes fundamentales de una aplicación moderna:
+
+- Backend en NestJS, encargado de exponer una API REST.
+
+- Frontend en Angular/Ionic, que consume esa API y muestra los datos.
+
+- Base de datos MariaDB, donde se almacenará la información consultada por el backend.
+
+Para que estos tres servicios se comuniquen entre sí, se emplea Docker Compose, que permite definir múltiples contenedores en un solo archivo y ejecutarlos como una red integrada. Esto facilita el despliegue, la escalabilidad y el mantenimiento de aplicaciones distribuidas.
 
 ## 4. Conocimientos previos
 
-Para la realización de este trabajo es necesario contar con conocimientos básicos en el uso de Git para clonar repositorios y gestionar proyectos, así como familiaridad con Node.js y npm, herramientas esenciales para instalar dependencias y ejecutar aplicaciones desarrolladas en React. También se requiere comprender el funcionamiento básico de Docker, incluyendo conceptos como imágenes, contenedores y Dockerfile, para poder construir y ejecutar la aplicación dentro de un entorno aislado. Adicionalmente, es útil conocer la estructura de proyectos en React, el proceso de construcción (npm run build) y el uso de servidores como Nginx para desplegar aplicaciones estáticas. Por último, se deben entender las bases del consumo de APIs, ya que el frontend depende de un backend simulado para obtener datos durante su ejecución.
+Para realizar esta práctica se requiere:
+
+- Comprender conceptos básicos de Docker: imágenes, contenedores, puertos, volúmenes.
+
+- Conocer NestJS o cualquier framework backend basado en Node.js.
+
+- Conocimiento básico de Angular/Ionic para el desarrollo frontend.
+
+- Conceptos de bases de datos relacionales (MariaDB/MySQL).
+
+- Familiaridad con línea de comandos.
+
+Saber interpretar errores comunes en Docker y solucionar problemas de conectividad entre contenedores.
 
 ## 5. Objetivos a alcanzar
 
-- Clonar correctamente el repositorio del proyecto frontend desarrollado en React.
-- Ejecutar la aplicación de manera local para verificar su correcto funcionamiento antes de contenerizarla.
-- Configurar y ejecutar el servicio backend simulado necesario para el consumo de datos por parte del frontend.
-- Diseñar y crear un archivo Dockerfile adecuado para construir una imagen optimizada de la aplicación.
-- Generar una imagen Docker funcional a partir del Dockerfile y validar su correcto funcionamiento.
-- Crear y ejecutar un contenedor basado en dicha imagen, garantizando que la aplicación sea accesible desde el navegador.
-- Asegurar la comunicación entre la aplicación frontend y el backend simulado durante la ejecución en contenedores.
-- Documentar todo el proceso para facilitar su comprensión, replicación y futura implementación.
+- Contenerizar correctamente una API NestJS.
 
+- Contenerizar un frontend Angular/Ionic listo para producción.
+
+- Levantar un servicio de base de datos MariaDB como contenedor.
+
+- Configurar un archivo Docker Compose capaz de conectar todos los servicios.
+
+- Validar la comunicación entre frontend → backend → base de datos.
+
+- Visualizar datos del backend desde el frontend mediante una tabla.
+
+- Crear un ambiente reproducible para proyectos reales usando Docker.
 
 ## 6. Equipo necesario
 
-- Computadora personal con sistema operativo Windows, Linux o macOS capaz de ejecutar entornos de desarrollo modernos.
-- Conexión a Internet para clonar los repositorios del frontend y del backend simulado.
-- Docker Desktop o Docker Engine, necesario para crear, gestionar y ejecutar imágenes y contenedores.
-- Node.js y npm instalados para ejecutar la aplicación React y el servicio mockAPI en entorno local.
-- Git para clonar y gestionar los repositorios del proyecto.
+- Laptop o PC con Windows, Linux o macOS.
 
----
+- Docker Desktop instalado.
+
+- Un editor de código (VS Code recomendado).
+
+- Navegador moderno (Chrome, Firefox, Edge).
+
+- Conexión a Internet para descargar imágenes base (Node, Nginx, MariaDB).
+
+- Espacio disponible en disco para imágenes y contenedores.
 
 ## 7. Material de apoyo
 
-- Repositorio oficial del frontend:
-Código fuente de la aplicación React utilizada para la construcción de la imagen Docker.
-- Guía de referencia para la creación de Dockerfile, construcción de imágenes y ejecución de contenedores.
-- Servicio JSON Server que provee los datos necesarios para el funcionamiento del frontend.
-- Información técnica sobre el funcionamiento del entorno de desarrollo, scripts disponibles y estructura del proyecto.
-- Referencias para la clonación y manejo de repositorios mediante línea de comandos.
+- Documentación oficial de Docker: https://docs.docker.com
 
----
+- NestJS Documentation: https://docs.nestjs.com
+
+- Angular/Ionic Documentation: https://angular.io
+ / https://ionicframework.com
+
+- MariaDB Documentation: https://mariadb.com/kb/en/documentation/
+
+- Docker Compose Reference: https://docs.docker.com/compose/
 
 ## 8. Procedimiento
 
-### Paso 1: Clonar los repositorios del proyecto
+### Paso 1: Crear Dockerfile para el Backend NestJS 
 
-Desde una terminal, ejecutar los siguientes comandos para obtener tanto el frontend como el backend simulado:
+Se crea un Dockerfile dentro del backend para empaquetar la aplicación NestJS. Allí se instalan dependencias, se copia el código y se ejecuta npm run build para generar la versión de producción. Esto permite que el backend se ejecute igual en cualquier máquina y exponga el puerto 3000 desde un contenedo
 
-```bash
-git clone https://github.com/Daviddotcoms/suda-frontend-s6
-git clone https://github.com/Daviddotcoms/mockAPI
-```
+<img src="evidencias/paso1.png" alt="Dockerfile backend" style="max-width: 800px;">
 
-Con estas instrucciones se obtendrán ambos repositorios en carpetas independientes dentro del directorio donde se ejecutaron los comandos.
-
-<img src="evidencias/uno.png" alt="Clonación de repositorios" style="max-width: 800px;">
-
-**Figura 8-1. Clonación exitosa de los repositorios frontend y backend.**
+**Figura 8-1. Crear Dockerfile para el Backend NestJS .**
 
 ---
 
-### Paso 2: Instalar dependencias y ejecutar el frontend localmente
+### Paso 2: Crear Dockerfile para el Frontend Angular/Ionic
 
-Entrar en la carpeta del proyecto frontend e instalar sus dependencias:
+En la carpeta frontend se crea otro Dockerfile con dos etapas: una para construir la app con Node (npm install y npm run build) y otra para servir los archivos generados con Nginx. Si aparecen errores de dependencias (como el conflicto de Capacitor), se ajusta el comando a npm install --legacy-peer-deps.
 
-```bash
-cd suda-frontend-s6
-npm install
-```
+<img src="evidencias/paso2.png" alt="Dockerfile frontend" style="max-width: 800px;">
 
-Una vez finalizada la instalación, iniciar la aplicación en modo desarrollo:
-
-```bash
-npm run dev
-```
-
-Por defecto, la aplicación React se habilitará en http://localhost:5173
- o en el puerto indicado por la terminal.
-
-<img src="evidencias/dos.png" alt="Frontend ejecutándose localmente" style="max-width: 800px;">
-
-**Figura 8-2. Aplicación React ejecutándose correctamente en modo desarrollo.**
+**Figura 8-2. Crear Dockerfile para el Frontend Angular/Ionic**
 
 ---
 
-### Paso 3: Ejecutar el backend simulado (Mock API)
+### Paso 3: Crear archivo Docker Compose principal
 
-Abrir otra terminal (sin cerrar la que ejecuta el frontend), desplazarse al directorio del backend e instalar lo necesario:
+En la raíz del proyecto se crea el docker-compose.yml que une los tres servicios: base de datos, backend y frontend. Este archivo hace que todos los contenedores compartan red, se puedan resolver por nombre y arranquen en orden. El frontend debe apuntar a http://backend:3000/api y el backend debe conectarse a mariadb:3306.
 
-```bash
-cd mockAPI
-npm install
-```
+<img src="evidencias/paso3.png" alt="Docker-compose.yml" style="max-width: 800px;">
 
-Luego, comenzar la ejecución del servidor de datos:
-
-```bash
-npm run dev
-```
-
-Este servicio Mock API se habilitará usualmente en http://localhost:3001
-, proporcionando los endpoints que requiere el frontend.
-
-<img src="evidencias/tres.png" alt="Mock API en ejecución" style="max-width: 800px;">
-
-**Figura 8-3. Mock API activa y respondiendo en el puerto 3001.**
+**Figura 8-3. Crear archivo Docker Compose principal**
 
 ---
 
-### Paso 4: Crear el archivo Dockerfile
+### Paso 4: Construir y levantar la red completa
 
-En el directorio principal del proyecto frontend (suda-frontend-s6), generar un archivo denominado Dockerfile con este contenido:
+Se ejecuta docker compose up --build desde la raíz. Este comando construye las imágenes y arranca los contenedores. Si falla durante la instalación del frontend, se corrige el Dockerfile usando --legacy-peer-deps o revisando plugins incompatibles.
 
-```dockerfile
-# Etapa 1: Construcción de la aplicación React
-FROM node:18 AS build
+<img src="evidencias/paso4.png" alt="Contruir y levantar" style="max-width: 800px;">
 
-# Establecer el directorio de trabajo
-WORKDIR /app
-
-# Copiar archivos de dependencias
-COPY package*.json ./
-
-# Instalar dependencias
-RUN npm install
-
-# Copiar el resto del código fuente
-COPY . .
-
-# Construir la aplicación para producción
-RUN npm run build
-
-# Etapa 2: Servir la aplicación con Nginx
-FROM nginx:alpine
-
-# Copiar los archivos construidos desde la etapa anterior
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Exponer el puerto 80
-EXPOSE 80
-
-# Comando para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-Este Dockerfile usa una construcción en dos fases: primero genera los archivos finales con Node.js y luego los despliega dentro de una imagen ligera basada en Nginx.
+**Figura 8-3. Construir y levantar la red completa**
 
 
-### Paso 5: Construir la imagen Docker
-
-Situado dentro del proyecto frontend, ejecutar:
-
-```bash
-docker build -t frontend-react:latest .
-```
-
-Este comando construirá la imagen empleando las instrucciones del Dockerfile. La primera construcción puede demorar un poco.
-
-
-Para verificar que la imagen se creó correctamente:
-
-```bash
-docker images
-```
-
-
-### Paso 6: Ejecutar el contenedor del frontend
-
-Iniciar un contenedor basado en la imagen construida:
-
-```bash
-docker run -d -p 8080:80 --name cont-react frontend-react:latest
-```
-
-Descripción de los parámetros:
-
--d: Ejecuta el contenedor en segundo plano
-
--p 8080:80: Relaciona el puerto 80 del contenedor con el puerto 8080 del host
-
---name cont-react: Asigna un nombre identificable al contenedor
-
-frontend-react:latest: Especifica la imagen utilizada
-
-Para comprobar que está corriendo:
+### Paso 5: Verificar contenedores activos
+Con docker ps se confirma que los contenedores de mariadb, backend y frontend estén activos. Si algún servicio falla, se revisan logs con docker logs <nombre> para identificar errores de instalación, puertos o conexión a la base.
 
 ```bash
 docker ps
 ```
 
+### Paso 6: Acceder al Frontend y visualizar los datos
 
-
-### Paso 7: Verificar el despliegue en el navegador
-
-Abrir el navegador e ingresar a:
-
+Abrir en navegador:
+```bash
+http:localhost
 ```
-http://localhost:8080
+El frontend carga la tabla de datos obtenidos desde:
+
+```bash
+http://backend:3000/api/...
 ```
 
-La aplicación deberá visualizarse correctamente, siendo servida por Nginx dentro del contenedor Docker.
+### Paso 7: Crear la petición al backend para obtener los productos
 
+Para mostrar datos reales en la tabla del frontend, se añadió en la aplicación React/Ionic un método que realiza una petición HTTP al backend. El frontend llama al endpoint público del backend (GET /products), el cual devuelve todos los registros almacenados en la tabla products de la base de datos.
+Este endpoint fue implementado en el controlador NestJS y expone los datos sin filtros para permitir el consumo directo desde el contenedor frontend.
 
-### Paso 8: Verificar integración con Mock API
-
-Probar las funciones del frontend para garantizar que las solicitudes al backend simulado están siendo procesadas sin errores y que la información fluye correctamente entre ambos servicios.
-
+<img src="evidencias/paso7.png" alt="peticion" style="max-width: 800px;">   
 
 ## 9. Resultados esperados
 
-Se espera que los repositorios del frontend y del backend simulado se clonen correctamente y que ambos proyectos puedan ejecutarse de forma local sin errores, verificando así el funcionamiento adecuado de la aplicación React y del servicio Mock API. Asimismo, se prevé la creación de un Dockerfile funcional que permita construir la aplicación en modo producción y generar una imagen Docker optimizada. Con esta imagen, se espera desplegar un contenedor estable capaz de servir la aplicación mediante Nginx y permitir su acceso desde el navegador. Finalmente, se busca garantizar que el frontend contenizado pueda comunicarse correctamente con el backend simulado y que todo el proceso quede documentado para asegurar su reproducibilidad en futuros entornos de desarrollo o pruebas.
+Backend, frontend y base de datos operan como servicios independientes usando Docker.
+
+El backend se conecta correctamente a MariaDB dentro de la misma red de contenedores.
+
+El frontend consume la API expuesta por el backend.
+
+Los datos se visualizan en una tabla dinámica.
+
+El proyecto se puede ejecutar completamente con un solo comando:
 
 
 ## 10. Bibliografía
 
-Docker Documentation. Get Started with Docker. Disponible en: https://docs.docker.com
+Docker Inc. (2025). Docker Documentation. https://docs.docker.com
 
-React Official Documentation. Learn React. Disponible en: https://react.dev
+NestJS Core Team (2025). NestJS Docs. https://docs.nestjs.com
 
-Node.js Documentation. About Node.js. Disponible en: https://nodejs.org
+Angular Team (2025). Angular Documentation. https://angular.io
 
-Git Documentation. Git Reference Manual. Disponible en: https://git-scm.com/doc
+MariaDB Foundation (2025). MariaDB Reference Manual. https://mariadb.com/kb
 
-Nginx Documentation. Official Nginx Guide. Disponible en: https://nginx.org/en/docs
+Ionic Framework (2025). Ionic Docs. https://ionicframework.com/docs
 
-JSON Server GitHub Repository. json-server: Full fake REST API. Disponible en: https://github.com/typicode/json-server
-
-Repositorio del proyecto frontend: https://github.com/Daviddotcoms/suda-frontend-s6
-
-Repositorio del backend simulado: https://github.com/Daviddotcoms/mockAPI
+Merkel, D. (2014). Docker: Lightweight Linux Containers. Linux Journal.
